@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="msv_hint_retry">touch screen to refresh</string>
+    <string name="msv_network_bad">Network anomalies, please check the network Settings.</string>
+    <string name="msv_loading">loading...</string>
+    <string name="msv_empty">empty</string>
+</resources>
