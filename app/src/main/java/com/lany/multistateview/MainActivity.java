@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
 import com.lany.msv.MultiStateView;
 
 
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
                 mHandler.sendMessageDelayed(msg, 3000);
             }
         });
+        mMultiStateView.setViewForState(R.layout.custom_empty_view, MultiStateView.STATE_EMPTY,true);
         ListView list = (ListView) mMultiStateView.findViewById(R.id.list);
 
         String[] data = new String[100];
@@ -59,10 +61,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.error:
-                mMultiStateView.setViewState(MultiStateView.STATE_ERROR,"Some problems");
+                mMultiStateView.setViewState(MultiStateView.STATE_ERROR, "Some problems");
                 return true;
             case R.id.empty:
-                mMultiStateView.setViewState(MultiStateView.STATE_EMPTY,"no result");
+                mMultiStateView.setViewState(MultiStateView.STATE_EMPTY, "no result");
                 return true;
 
             case R.id.content:
@@ -70,10 +72,10 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.loading:
-                mMultiStateView.setViewState(MultiStateView.STATE_LOADING,"waiting");
+                mMultiStateView.setViewState(MultiStateView.STATE_LOADING, "waiting");
                 return true;
             case R.id.network:
-                mMultiStateView.setViewState(MultiStateView.STATE_NETWORK,"The network is not available");
+                mMultiStateView.setViewState(MultiStateView.STATE_NETWORK, "The network is not available");
                 return true;
         }
 
