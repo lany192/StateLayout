@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="MultiStateView">
-        <attr name="msv_loadingView" format="reference" />
-        <attr name="msv_emptyView" format="reference" />
-        <attr name="msv_errorView" format="reference" />
-        <attr name="msv_networkView" format="reference" />
-        <attr name="msv_viewState" format="enum">
+    <declare-styleable name="StateView">
+        <attr name="sv_loadingView" format="reference" />
+        <attr name="sv_emptyView" format="reference" />
+        <attr name="sv_errorView" format="reference" />
+        <attr name="sv_networkView" format="reference" />
+        <attr name="sv_viewState" format="enum">
             <enum name="content" value="0" />
             <enum name="error" value="1" />
             <enum name="empty" value="2" />

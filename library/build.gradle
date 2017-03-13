@@ -1,13 +1,16 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
+apply plugin: 'bintray-release'
+
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
         minSdkVersion 11
-        targetSdkVersion 23
-        versionCode 3
-        versionName "1.2.0"
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0.0"
     }
 
     lintOptions {
@@ -18,8 +21,24 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
-
     dependencies {
         compile 'com.android.support:support-annotations:+'
     }
+}
+
+publish {
+    bintrayUser = "${BINTRAY_USER}"
+    bintrayKey =  "${BINTRAY_KEY}"
+    artifactId = 'StateView'
+    userOrg = 'lany192'
+    groupId = 'com.lany'
+    uploadName = 'StateView'
+    publishVersion = '1.0.0'
+    autoPublish = true
+    dryRun = false
+    desc = 'This is a custom android holo datepicker timepicker from android source.'
+    website = 'https://github.com/lany192/MultiStateView'
+    issueTracker = 'https://github.com/lany192/MultiStateView/issues'
+    repository = 'https://github.com/lany192/MultiStateView.git'
+    licences = ['Apache-2.0']
 }

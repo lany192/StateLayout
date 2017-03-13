@@ -1,4 +1,4 @@
-package com.lany.msv;
+package com.lany.view;
 
 
 import android.content.Context;
@@ -18,22 +18,20 @@ import android.widget.TextView;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-public class MultiStateView extends FrameLayout {
+public class StateView extends FrameLayout {
     private final String TAG = this.getClass().getSimpleName();
-    public static final int STATE_UNKNOWN = -1;
-    public static final int STATE_CONTENT = 0;
-    public static final int STATE_ERROR = 1;
-    public static final int STATE_EMPTY = 2;
-    public static final int STATE_LOADING = 3;
-    public static final int STATE_NETWORK = 4;
+    public static final int UNKNOWN = -1;
+    public static final int CONTENT = 0;
+    public static final int ERROR = 1;
+    public static final int EMPTY = 2;
+    public static final int LOADING = 3;
+    public static final int NETWORK = 4;
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({STATE_UNKNOWN, STATE_CONTENT, STATE_ERROR, STATE_EMPTY, STATE_LOADING, STATE_NETWORK})
-    public @interface ViewState {
-        
-    }
+    @IntDef({UNKNOWN, CONTENT, ERROR, EMPTY, LOADING, NETWORK})
+    public @interface State {
 
-    private LayoutInflater mInflater;
+    }
 
     private View mContentView;
     private View mLoadingView;
@@ -41,8 +39,8 @@ public class MultiStateView extends FrameLayout {
     private View mEmptyView;
     private View mNetworkView;
 
-    @ViewState
-    private int mViewState = STATE_UNKNOWN;
+    @State
+    private int mViewState = UNKNOWN;
 
     private OnRetryClickListener mListener;
 
@@ -54,30 +52,58 @@ public class MultiStateView extends FrameLayout {
         this.mListener = listener;
     }
 
-    public MultiStateView(Context context) {
+    public StateView(Context context) {
         this(context, null);
     }
 
-    public MultiStateView(Context context, AttributeSet attrs) {
+    public StateView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
-    public MultiStateView(Context context, AttributeSet attrs, int defStyle) {
+    public StateView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(attrs);
     }
 
     private void init(AttributeSet attrs) {
-        mInflater = LayoutInflater.from(getContext());
-        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.MultiStateView);
 
-        int loadingViewResId = a.getResourceId(R.styleable.MultiStateView_msv_loadingView, R.layout.msv_loading_view);
-        mLoadingView = mInflater.inflate(loadingViewResId, this, false);
+        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.StateView);
+        int loadingViewResId = a.getResourceId(R.styleable.StateView_sv_loadingView, R.layout.state_view_loading);
+        int emptyViewResId = a.getResourceId(R.styleable.StateView_sv_emptyView, R.layout.state_view_empty);
+        int errorViewResId = a.getResourceId(R.styleable.StateView_sv_errorView, R.layout.state_view_error);
+        int networkViewResId = a.getResourceId(R.styleable.StateView_sv_networkView, R.layout.state_view_network);
+        int viewState = a.getInt(R.styleable.StateView_sv_viewState, CONTENT);
+        switch (viewState) {
+            case CONTENT:
+                mViewState = CONTENT;
+                break;
+            case ERROR:
+                mViewState = ERROR;
+                break;
+            case EMPTY:
+                mViewState = EMPTY;
+                break;
+            case LOADING:
+                mViewState = LOADING;
+                break;
+            case NETWORK:
+                mViewState = NETWORK;
+                break;
+            case UNKNOWN:
+            default:
+                mViewState = UNKNOWN;
+                break;
+        }
+        a.recycle();
+
+
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        mLoadingView = inflater.inflate(loadingViewResId, this, false);
         addView(mLoadingView, mLoadingView.getLayoutParams());
 
-        int emptyViewResId = a.getResourceId(R.styleable.MultiStateView_msv_emptyView, R.layout.msv_empty_view);
-        mEmptyView = mInflater.inflate(emptyViewResId, this, false);
+
+        mEmptyView = inflater.inflate(emptyViewResId, this, false);
         mEmptyView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,8 +114,8 @@ public class MultiStateView extends FrameLayout {
         });
         addView(mEmptyView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
-        int errorViewResId = a.getResourceId(R.styleable.MultiStateView_msv_errorView, R.layout.msv_error_view);
-        mErrorView = mInflater.inflate(errorViewResId, this, false);
+
+        mErrorView = inflater.inflate(errorViewResId, this, false);
         mErrorView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,8 +126,8 @@ public class MultiStateView extends FrameLayout {
         });
         addView(mErrorView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
-        int networkViewResId = a.getResourceId(R.styleable.MultiStateView_msv_networkView, R.layout.msv_network_view);
-        mNetworkView = mInflater.inflate(networkViewResId, this, false);
+
+        mNetworkView = inflater.inflate(networkViewResId, this, false);
         mNetworkView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,38 +137,14 @@ public class MultiStateView extends FrameLayout {
             }
         });
         addView(mNetworkView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-
-        int viewState = a.getInt(R.styleable.MultiStateView_msv_viewState, STATE_CONTENT);
-
-        switch (viewState) {
-            case STATE_CONTENT:
-                mViewState = STATE_CONTENT;
-                break;
-            case STATE_ERROR:
-                mViewState = STATE_ERROR;
-                break;
-            case STATE_EMPTY:
-                mViewState = STATE_EMPTY;
-                break;
-            case STATE_LOADING:
-                mViewState = STATE_LOADING;
-                break;
-            case STATE_NETWORK:
-                mViewState = STATE_NETWORK;
-                break;
-            case STATE_UNKNOWN:
-            default:
-                mViewState = STATE_UNKNOWN;
-                break;
-        }
-        a.recycle();
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (mContentView == null) throw new IllegalArgumentException("Content view is not defined");
-        setView(STATE_UNKNOWN);
+        if (mContentView == null)
+            throw new IllegalArgumentException("Content view is not defined");
+        setView(UNKNOWN);
     }
 
     @Override
@@ -188,33 +190,33 @@ public class MultiStateView extends FrameLayout {
     }
 
     @Nullable
-    public View getView(@ViewState int state) {
+    public View getView(@State int state) {
         switch (state) {
-            case STATE_LOADING:
+            case LOADING:
                 return mLoadingView;
-            case STATE_CONTENT:
+            case CONTENT:
                 return mContentView;
-            case STATE_EMPTY:
+            case EMPTY:
                 return mEmptyView;
-            case STATE_ERROR:
+            case ERROR:
                 return mErrorView;
-            case STATE_NETWORK:
+            case NETWORK:
                 return mNetworkView;
             default:
                 return null;
         }
     }
 
-    @ViewState
+    @State
     public int getViewState() {
         return mViewState;
     }
 
-    public void setViewState(@ViewState int state) {
+    public void setViewState(@State int state) {
         setViewState(state, null);
     }
 
-    public void setViewState(@ViewState int state, String customMsg) {
+    public void setViewState(@State int state, String customMsg) {
         if (state != mViewState) {
             int previous = mViewState;
             mViewState = state;
@@ -222,9 +224,9 @@ public class MultiStateView extends FrameLayout {
         }
     }
 
-    private void setView(@ViewState int previousState, String customMsg) {
+    private void setView(@State int previousState, String customMsg) {
         switch (mViewState) {
-            case STATE_LOADING:
+            case LOADING:
                 if (mLoadingView == null) {
                     throw new NullPointerException("Loading View");
                 }
@@ -239,11 +241,11 @@ public class MultiStateView extends FrameLayout {
                         ((TextView) mLoadingView.findViewById(R.id.msv_loading_msg_text)).setText(customMsg);
                     } catch (Exception e) {
                         Log.e(TAG,
-                                "Have to a 'R.id.msv_loading_msg_text' id in custom loading layout.");
+                                "Have to a 'R.id.sv_loading_msg_text' id in custom loading layout.");
                     }
                 }
                 break;
-            case STATE_EMPTY:
+            case EMPTY:
                 if (mEmptyView == null) {
                     throw new NullPointerException("Empty View");
                 }
@@ -258,11 +260,11 @@ public class MultiStateView extends FrameLayout {
                         ((TextView) mEmptyView.findViewById(R.id.msv_empty_msg_text)).setText(customMsg);
                     } catch (Exception e) {
                         Log.e(TAG,
-                                "Have to a 'R.id.msv_empty_msg_text' id in custom empty layout.");
+                                "Have to a 'R.id.sv_empty_msg_text' id in custom empty layout.");
                     }
                 }
                 break;
-            case STATE_ERROR:
+            case ERROR:
                 if (mErrorView == null) {
                     throw new NullPointerException("Error View");
                 }
@@ -277,11 +279,11 @@ public class MultiStateView extends FrameLayout {
                         ((TextView) mErrorView.findViewById(R.id.msv_error_msg_text)).setText(customMsg);
                     } catch (Exception e) {
                         Log.e(TAG,
-                                "Have to a 'R.id.msv_error_msg_text' id in custom error layout.");
+                                "Have to a 'R.id.sv_error_msg_text' id in custom error layout.");
                     }
                 }
                 break;
-            case STATE_NETWORK:
+            case NETWORK:
                 if (mErrorView == null) {
                     throw new NullPointerException("Network View");
                 }
@@ -296,11 +298,11 @@ public class MultiStateView extends FrameLayout {
                         ((TextView) mNetworkView.findViewById(R.id.msv_network_msg_text)).setText(customMsg);
                     } catch (Exception e) {
                         Log.e(TAG,
-                                "Have to a 'R.id.msv_network_msg_text' id in custom network layout.");
+                                "Have to a 'R.id.sv_network_msg_text' id in custom network layout.");
                     }
                 }
                 break;
-            case STATE_CONTENT:
+            case CONTENT:
             default:
                 if (mContentView == null) {
                     // Should never happen, the view should throw an exception if no content view is present upon creation
@@ -316,7 +318,7 @@ public class MultiStateView extends FrameLayout {
         }
     }
 
-    private void setView(@ViewState int previousState) {
+    private void setView(@State int previousState) {
         setView(previousState, null);
     }
 
@@ -327,50 +329,49 @@ public class MultiStateView extends FrameLayout {
         return view != mLoadingView && view != mErrorView && view != mEmptyView && view != mNetworkView;
     }
 
-    public void setViewForState(View view, @ViewState int state, boolean switchToState) {
+    public void setViewForState(View view, @State int state, boolean switchToState) {
         switch (state) {
-            case STATE_LOADING:
+            case LOADING:
                 if (mLoadingView != null) removeView(mLoadingView);
                 mLoadingView = view;
                 addView(mLoadingView);
                 break;
-            case STATE_EMPTY:
+            case EMPTY:
                 if (mEmptyView != null) removeView(mEmptyView);
                 mEmptyView = view;
                 addView(mEmptyView);
                 break;
-            case STATE_ERROR:
+            case ERROR:
                 if (mErrorView != null) removeView(mErrorView);
                 mErrorView = view;
                 addView(mErrorView);
                 break;
-            case STATE_CONTENT:
+            case CONTENT:
                 if (mContentView != null) removeView(mContentView);
                 mContentView = view;
                 addView(mContentView);
                 break;
-            case STATE_NETWORK:
+            case NETWORK:
                 if (mNetworkView != null) removeView(mNetworkView);
                 mNetworkView = view;
                 addView(mNetworkView);
                 break;
         }
 
-        setView(STATE_UNKNOWN);
+        setView(UNKNOWN);
         if (switchToState) setViewState(state);
     }
 
-    public void setViewForState(View view, @ViewState int state) {
+    public void setViewForState(View view, @State int state) {
         setViewForState(view, state, false);
     }
 
-    public void setViewForState(@LayoutRes int layoutRes, @ViewState int state, boolean switchToState) {
-        if (mInflater == null) mInflater = LayoutInflater.from(getContext());
-        View view = mInflater.inflate(layoutRes, this, false);
+    public void setViewForState(@LayoutRes int layoutRes, @State int state, boolean switchToState) {
+        View view = LayoutInflater.from(getContext()).inflate(layoutRes, this, false);
         setViewForState(view, state, switchToState);
     }
 
-    public void setViewForState(@LayoutRes int layoutRes, @ViewState int state) {
+    public void setViewForState(@LayoutRes int layoutRes, @State int state) {
         setViewForState(layoutRes, state, false);
     }
 }

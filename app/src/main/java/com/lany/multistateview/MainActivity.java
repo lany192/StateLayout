@@ -10,36 +10,33 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.lany.msv.MultiStateView;
-
+import com.lany.view.StateView;
 
 public class MainActivity extends AppCompatActivity {
-
     private TestHandler mHandler = new TestHandler();
-
-    private MultiStateView mMultiStateView;
+    private StateView mStateView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mMultiStateView = (MultiStateView) findViewById(R.id.multiStateView);
-        mMultiStateView.setOnRetryClickListener(new MultiStateView.OnRetryClickListener() {
+        mStateView = (StateView) findViewById(R.id.stateView);
+        mStateView.setOnRetryClickListener(new StateView.OnRetryClickListener() {
             @Override
             public void onRetry() {
-                mMultiStateView.setViewState(MultiStateView.STATE_LOADING);
+                mStateView.setViewState(StateView.LOADING);
                 Toast.makeText(getApplicationContext(), "retry clicked", Toast.LENGTH_SHORT).show();
                 Message msg = mHandler.obtainMessage();
-                msg.obj = mMultiStateView;
+                msg.obj = mStateView;
                 mHandler.sendMessageDelayed(msg, 3000);
             }
         });
-        mMultiStateView.setViewForState(R.layout.custom_empty_view, MultiStateView.STATE_EMPTY,true);
-        ListView list = (ListView) mMultiStateView.findViewById(R.id.list);
+        mStateView.setViewForState(R.layout.custom_empty_view, StateView.EMPTY, true);
+        ListView list = (ListView) mStateView.findViewById(R.id.list);
 
         String[] data = new String[100];
         for (int i = 0; i < 100; i++) {
-            data[i] = "simulation item" + i;
+            data[i] = "item" + i;
         }
 
         list.setAdapter(new ArrayAdapter<>(this, R.layout.item_listview, data));
@@ -61,21 +58,19 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.error:
-                mMultiStateView.setViewState(MultiStateView.STATE_ERROR, "Some problems");
+                mStateView.setViewState(StateView.ERROR, "Some problems");
                 return true;
             case R.id.empty:
-                mMultiStateView.setViewState(MultiStateView.STATE_EMPTY, "no result");
+                mStateView.setViewState(StateView.EMPTY, "no result");
                 return true;
-
             case R.id.content:
-                mMultiStateView.setViewState(MultiStateView.STATE_CONTENT);
+                mStateView.setViewState(StateView.CONTENT);
                 return true;
-
             case R.id.loading:
-                mMultiStateView.setViewState(MultiStateView.STATE_LOADING, "waiting");
+                mStateView.setViewState(StateView.LOADING, "waiting");
                 return true;
             case R.id.network:
-                mMultiStateView.setViewState(MultiStateView.STATE_NETWORK, "The network is not available");
+                mStateView.setViewState(StateView.NETWORK, "The network is not available");
                 return true;
         }
 
@@ -86,8 +81,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void handleMessage(Message msg) {
-            if (msg.obj instanceof MultiStateView) {
-                ((MultiStateView) msg.obj).setViewState(MultiStateView.STATE_CONTENT);
+            if (msg.obj instanceof StateView) {
+                ((StateView) msg.obj).setViewState(StateView.CONTENT);
             }
 
             super.handleMessage(msg);
