@@ -10,11 +10,12 @@ android {
         minSdkVersion 11
         targetSdkVersion 25
         versionCode 1
-        versionName "1.0.0"
+        versionName "1.0.2"
     }
 
     lintOptions {
         abortOnError false
+        checkReleaseBuilds false
     }
 
     compileOptions {
@@ -22,7 +23,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
     dependencies {
-        compile 'com.android.support:support-annotations:+'
+        compile 'com.android.support:support-annotations:25.3.0'
     }
 }
 
@@ -33,12 +34,54 @@ publish {
     userOrg = 'lany192'
     groupId = 'com.lany'
     uploadName = 'StateView'
-    publishVersion = '1.0.0'
+    publishVersion = '1.0.2'
     autoPublish = true
     dryRun = false
-    desc = 'This is a custom android holo datepicker timepicker from android source.'
+    desc = 'This is an Android custom view more, contained load, error, empty and abnormal network the four views as a result, for the vast majority of app interface switching'
     website = 'https://github.com/lany192/MultiStateView'
     issueTracker = 'https://github.com/lany192/MultiStateView/issues'
     repository = 'https://github.com/lany192/MultiStateView.git'
     licences = ['Apache-2.0']
+}
+
+
+// 生成jar包的task，不需要修改。
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+// 生成javaDoc的jar，不需要修改
+task javadoc(type: Javadoc) {
+    options.encoding = "UTF-8"
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+//下面设置编码格式，重点注意，如果不设置可能会在gradlew install的时候出现GBK编码映射错误
+javadoc {
+    options {
+        encoding "UTF-8"
+        charSet 'UTF-8'
+        author true
+        version true
+        links "http://docs.oracle.com/javase/7/docs/api"
+        title 'This is an Android custom view more'   // 文档标题
+    }
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+// 生成jar包
+task releaseJar(type: Copy) {
+    from('build/intermediates/bundles/release')
+    into('../jar')
+    include('classes.jar')
+    rename('classes.jar', 'okgo-' + version + '.jar')
 }
