@@ -24,14 +24,14 @@ public class MainActivity extends AppCompatActivity {
         mStateView.setOnRetryClickListener(new StateView.OnRetryClickListener() {
             @Override
             public void onRetry() {
-                mStateView.setViewState(StateView.LOADING);
+                mStateView.showLoadingView();
                 Toast.makeText(getApplicationContext(), "retry clicked", Toast.LENGTH_SHORT).show();
                 Message msg = mHandler.obtainMessage();
                 msg.obj = mStateView;
                 mHandler.sendMessageDelayed(msg, 3000);
             }
         });
-        mStateView.setViewForState(R.layout.custom_empty_view, StateView.EMPTY, true);
+        mStateView.setEmptyView(R.layout.custom_empty_view);
         ListView list = (ListView) mStateView.findViewById(R.id.list);
 
         String[] data = new String[100];
@@ -58,22 +58,21 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.error:
-                mStateView.setViewState(StateView.ERROR, "Some problems");
+                mStateView.showErrorView("Some problems");
                 return true;
             case R.id.empty:
-                mStateView.setViewState(StateView.EMPTY, "no result");
+                mStateView.showEmptyView("no result");
                 return true;
             case R.id.content:
-                mStateView.setViewState(StateView.CONTENT);
+                mStateView.showContentView();
                 return true;
             case R.id.loading:
-                mStateView.setViewState(StateView.LOADING, "waiting");
+                mStateView.showLoadingView("waiting");
                 return true;
             case R.id.network:
-                mStateView.setViewState(StateView.NETWORK, "The network is not available");
+                mStateView.showNetworkView("The network is not available");
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -82,9 +81,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             if (msg.obj instanceof StateView) {
-                ((StateView) msg.obj).setViewState(StateView.CONTENT);
+                ((StateView) msg.obj).showContentView();
             }
-
             super.handleMessage(msg);
         }
     }
