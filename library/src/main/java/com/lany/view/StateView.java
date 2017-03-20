@@ -4,7 +4,6 @@ package com.lany.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.LayoutRes;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -173,26 +172,24 @@ public class StateView extends FrameLayout {
         return super.addViewInLayout(child, index, params, preventRequestLayout);
     }
 
-    @Nullable
-    private View getView(State state) {
-        switch (state) {
-            case LOADING:
-                return mLoadingView;
-            case CONTENT:
-                return mContentView;
-            case EMPTY:
-                return mEmptyView;
-            case ERROR:
-                return mErrorView;
-            case NETWORK:
-                return mNetworkView;
-            default:
-                return null;
-        }
+    public View getLoadingView() {
+        return mLoadingView;
     }
 
-    public State getViewState() {
-        return mViewState;
+    public View getContentView() {
+        return mContentView;
+    }
+
+    public View getEmptyView() {
+        return mEmptyView;
+    }
+
+    public View getErrorView() {
+        return mErrorView;
+    }
+
+    public View getNetworkView() {
+        return mNetworkView;
     }
 
     private void setViewState(State state) {
