@@ -38,4 +38,4 @@ This is an Android custom view more, contained load, error, empty and abnormal n
 
     </com.lany.view.StateLayout>
 ## Preview
-![screenshot](https://github.com/lany192/MultiStateView/preview/mygif.gif)
+![image](https://github.com/lany192/MultiStateView/raw/master/preview/video.gif)
