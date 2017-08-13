@@ -1,6 +1,7 @@
 package com.lany.multistateview;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -60,7 +61,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onRetry(@StateLayout.State int state) {
                 mStateLayout.showLoading();
-                Toast.makeText(getApplicationContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mStateLayout.showContent();
+                        Toast.makeText(getApplicationContext(), "load data finish", Toast.LENGTH_SHORT).show();
+                    }
+                },3000);
+
+
             }
         });
 

@@ -7,24 +7,26 @@
     android:orientation="vertical">
 
     <ImageView
+        android:id="@+id/error_warning_image_view"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:background="@drawable/warning" />
 
     <TextView
-        android:id="@+id/msv_error_msg_text"
+        android:id="@+id/error_msg_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="抱歉，发生了故障"
+        android:text="@string/sorry_hint"
         android:textColor="#555555"
         android:textSize="14sp" />
 
     <TextView
+        android:id="@+id/error_hint_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/msv_hint_retry"
+        android:text="@string/touch_refresh"
         android:textColor="#999999"
         android:textSize="12sp" />
 

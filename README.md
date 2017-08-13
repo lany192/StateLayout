@@ -1,24 +1,26 @@
 # MultiStateView
 这是一个Android自定义的多视图，包含加载中、错误、结果空和网络异常这4种视图，适合绝大多数app的界面切换
-
-    compile 'com.lany:StateView:1.0.5'
-
-
-
-    <com.lany.view.StateView
-        android:id="@+id/stateView"
+## Gradle
+    compile 'com.lany:StateView:1.0.6'
+## Layout
+    <com.lany.view.StateLayout
+        android:id="@+id/stateLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:sv_viewState="content">
-        
+        app:emptyView="@layout/custom_empty_view"
+        app:errorView="@layout/custom_error_view"
+        app:loadingView="@layout/custom_loading_view"
+        app:networkView="@layout/custom_network_view"
+        app:viewState="content">
+
         <ListView
             android:id="@+id/list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    
-    </com.lany.view.StateView>
+            android:layout_height="match_parent"
+            tools:listitem="@android:layout/simple_list_item_1" />
 
-
+    </com.lany.view.StateLayout>
+## Preview
 ![image](https://github.com/lany192/MultiStateView/raw/master/Screenshot/c.png)
 ![image](https://github.com/lany192/MultiStateView/raw/master/Screenshot/b.png)
 ![image](https://github.com/lany192/MultiStateView/raw/master/Screenshot/a.png)
