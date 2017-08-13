@@ -6,20 +6,18 @@
     android:gravity="center"
     android:orientation="vertical">
 
+    <ProgressBar
+        style="?android:progressBarStyleInverse"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="center"
+        android:orientation="vertical" />
+
     <TextView
+        android:id="@+id/msv_loading_msg_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/msv_empty"
-        android:textColor="#555555"
+        android:layout_marginTop="8dp"
+        android:text="@string/msv_loading"
         android:textSize="14sp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/msv_hint_retry"
-        android:textColor="#999999"
-        android:textSize="12sp" />
-
 </LinearLayout>

@@ -4,8 +4,8 @@ package com.lany.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,14 +34,26 @@ public class StateLayout extends FrameLayout {
         int NETWORK = 4;
     }
 
-    private OnRetryClickListener mListener;
+    @Nullable
+    private OnStateListener mStateListener;
+    @Nullable
+    private OnRetryListener mRetryListener;
 
-    public interface OnRetryClickListener {
+
+    public void setOnStateListener(OnStateListener listener) {
+        mStateListener = listener;
+    }
+
+    public interface OnStateListener {
+        void onStateChanged(@State int state);
+    }
+
+    public interface OnRetryListener {
         void onRetry(@State int state);
     }
 
-    public void setOnRetryClickListener(OnRetryClickListener listener) {
-        this.mListener = listener;
+    public void setOnRetryListener(OnRetryListener listener) {
+        this.mRetryListener = listener;
     }
 
     public StateLayout(Context context) {
@@ -59,51 +71,63 @@ public class StateLayout extends FrameLayout {
     }
 
     private void init(AttributeSet attrs) {
-        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.StateLayout);
-        int loadingViewResId = a.getResourceId(R.styleable.StateLayout_loadingView, R.layout.state_view_loading);
-        int emptyViewResId = a.getResourceId(R.styleable.StateLayout_emptyView, R.layout.state_view_empty);
-        int errorViewResId = a.getResourceId(R.styleable.StateLayout_errorView, R.layout.state_view_error);
-        int networkViewResId = a.getResourceId(R.styleable.StateLayout_networkView, R.layout.state_view_network);
-        int viewState = a.getInt(R.styleable.StateLayout_viewState, State.CONTENT);
-        a.recycle();
-        mState = viewState;
-        mLoadingView = addStateView(loadingViewResId);
+        int loadingViewResId = R.layout.state_view_loading;
+        int emptyViewResId = R.layout.state_view_empty;
+        int errorViewResId = R.layout.state_view_error;
+        int networkViewResId = R.layout.state_view_network;
+        mState = State.CONTENT;
+        if (attrs != null) {
+            TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.StateLayout);
+            loadingViewResId = a.getResourceId(R.styleable.StateLayout_loadingView, R.layout.state_view_loading);
+            emptyViewResId = a.getResourceId(R.styleable.StateLayout_emptyView, R.layout.state_view_empty);
+            errorViewResId = a.getResourceId(R.styleable.StateLayout_errorView, R.layout.state_view_error);
+            networkViewResId = a.getResourceId(R.styleable.StateLayout_networkView, R.layout.state_view_network);
+            mState = a.getInt(R.styleable.StateLayout_viewState, State.CONTENT);
+            a.recycle();
+        }
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        mLoadingView = inflater.inflate(loadingViewResId, this, false);
+        mLoadingView.setVisibility(GONE);
+        addView(mLoadingView, mLoadingView.getLayoutParams());
 
-        mEmptyView = addStateView(emptyViewResId);
+
+        mEmptyView = inflater.inflate(emptyViewResId, this, false);
+        mEmptyView.setVisibility(GONE);
         mEmptyView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mListener != null) {
-                    mListener.onRetry(State.EMPTY);
+                if (mRetryListener != null) {
+                    mRetryListener.onRetry(State.EMPTY);
                 }
             }
         });
+        addView(mEmptyView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
-        mErrorView = addStateView(errorViewResId);
+
+        mErrorView = inflater.inflate(errorViewResId, this, false);
+        mErrorView.setVisibility(GONE);
         mErrorView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mListener != null) {
-                    mListener.onRetry(State.ERROR);
+                if (mRetryListener != null) {
+                    mRetryListener.onRetry(State.ERROR);
                 }
             }
         });
+        addView(mErrorView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
-        mNetworkView = addStateView(networkViewResId);
+
+        mNetworkView = inflater.inflate(networkViewResId, this, false);
+        mNetworkView.setVisibility(GONE);
         mNetworkView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mListener != null) {
-                    mListener.onRetry(State.NETWORK);
+                if (mRetryListener != null) {
+                    mRetryListener.onRetry(State.NETWORK);
                 }
             }
         });
-    }
-
-    private View addStateView(@LayoutRes int layoutId) {
-        View view = LayoutInflater.from(getContext()).inflate(layoutId, this, false);
-        addView(view, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        return view;
+        addView(mNetworkView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
     }
 
     @Override
@@ -163,11 +187,7 @@ public class StateLayout extends FrameLayout {
     }
 
     private void setViewState(@State int state) {
-        if (state == mState) {
-            return;
-        }
         mState = state;
-        Log.i(TAG, "switchStateView: mState==" + mState);
         if (mLoadingView != null) {
             mLoadingView.setVisibility(mState == State.LOADING ? VISIBLE : GONE);
         } else {
@@ -192,6 +212,9 @@ public class StateLayout extends FrameLayout {
             mContentView.setVisibility(mState == State.CONTENT ? VISIBLE : GONE);
         } else {
             throw new NullPointerException("ContentView View");
+        }
+        if (mStateListener != null) {
+            mStateListener.onStateChanged(mState);
         }
     }
 
