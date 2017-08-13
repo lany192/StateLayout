@@ -136,7 +136,6 @@ public class StateLayout extends FrameLayout {
         super.onAttachedToWindow();
         if (mContentView == null)
             throw new IllegalArgumentException("Content view is not defined");
-        setViewState(State.CONTENT);
     }
 
     @Override
