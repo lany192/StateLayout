@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < 100; i++) {
             data[i] = "Item " + i;
         }
-        list.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, data));
+        list.setAdapter(new ArrayAdapter<>(getApplicationContext(), R.layout.list_item, data));
     }
 }
 
