@@ -41,4 +41,3 @@
 ![image](https://github.com/lany192/MultiStateView/raw/master/preview/a.png)
 ![image](https://github.com/lany192/MultiStateView/raw/master/preview/d.png)
 ![image](https://github.com/lany192/MultiStateView/raw/master/preview/e.png)
-基于https://github.com/Kennyc1012/MultiStateView
