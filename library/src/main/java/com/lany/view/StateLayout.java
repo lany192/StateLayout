@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -293,5 +294,24 @@ public class StateLayout extends FrameLayout {
 
     public void setErrorView(@LayoutRes int layoutResId) {
         setViewForState(layoutResId, State.ERROR, true);
+    }
+
+    @Nullable
+    public View getView(@State int state) {
+        switch (state) {
+            case State.LOADING:
+                return mLoadingView;
+            case State.CONTENT:
+                return mContentView;
+            case State.EMPTY:
+                return mEmptyView;
+            case State.ERROR:
+                return mErrorView;
+            case State.NETWORK:
+                return mNetworkView;
+            default:
+                Log.e(TAG, "error!!!");
+                return null;
+        }
     }
 }
