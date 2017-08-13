@@ -1,13 +1,11 @@
-<com.lany.view.StateView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/stateView"
+<com.lany.view.StateLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/stateLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:sv_viewState="content">
+    android:layout_height="match_parent">
 
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-</com.lany.view.StateView>
+</com.lany.view.StateLayout>

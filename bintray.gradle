@@ -1,14 +1,16 @@
 apply plugin: 'maven'
 apply plugin: 'bintray-release'
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
 publish {
-    bintrayUser = "${BINTRAY_USER}"
-    bintrayKey =  "${BINTRAY_KEY}"
+    bintrayUser = properties.getProperty("BINTRAY_USER")
+    bintrayKey = properties.getProperty("BINTRAY_KEY")
     artifactId = 'StateView'
     userOrg = 'lany192'
     groupId = 'com.lany'
     uploadName = 'StateView'
-    publishVersion = '1.0.4'
+    publishVersion = '1.0.5'
     autoPublish = true
     dryRun = false
     desc = 'This is an Android custom view more, contained load, error, empty and abnormal network the four views as a result, for the vast majority of app interface switching'

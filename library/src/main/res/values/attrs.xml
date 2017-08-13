@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <declare-styleable name="StateView">
-        <attr name="sv_loadingView" format="reference" />
-        <attr name="sv_emptyView" format="reference" />
-        <attr name="sv_errorView" format="reference" />
-        <attr name="sv_networkView" format="reference" />
-        <attr name="sv_viewState" format="enum">
+    <declare-styleable name="StateLayout">
+        <attr name="loadingView" format="reference" />
+        <attr name="emptyView" format="reference" />
+        <attr name="errorView" format="reference" />
+        <attr name="networkView" format="reference" />
+        <attr name="viewState" format="enum">
             <enum name="content" value="0" />
             <enum name="error" value="1" />
             <enum name="empty" value="2" />

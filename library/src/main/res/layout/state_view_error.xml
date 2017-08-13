@@ -9,7 +9,7 @@
     <ImageView
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:background="@drawable/ic_error_unkown" />
+        android:background="@drawable/warning" />
 
     <TextView
         android:id="@+id/msv_error_msg_text"

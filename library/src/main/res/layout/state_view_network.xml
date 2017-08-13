@@ -9,7 +9,7 @@
     <ImageView
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:background="@drawable/ic_error_network" />
+        android:background="@drawable/wifi" />
 
     <TextView
         android:id="@+id/msv_network_msg_text"

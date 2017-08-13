@@ -10,29 +10,29 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.lany.view.StateView;
+import com.lany.view.StateLayout;
 
 public class MainActivity extends AppCompatActivity {
     private TestHandler mHandler = new TestHandler();
-    private StateView mStateView;
+    private StateLayout mStateLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mStateView = (StateView) findViewById(R.id.stateView);
-        mStateView.setOnRetryClickListener(new StateView.OnRetryClickListener() {
+        mStateLayout = (StateLayout) findViewById(R.id.stateLayout);
+        mStateLayout.setOnRetryClickListener(new StateLayout.OnRetryClickListener() {
             @Override
-            public void onRetry() {
-                mStateView.showLoadingView();
+            public void onRetry(@StateLayout.State int state) {
+                mStateLayout.showLoading();
                 Toast.makeText(getApplicationContext(), "retry clicked", Toast.LENGTH_SHORT).show();
                 Message msg = mHandler.obtainMessage();
-                msg.obj = mStateView;
+                msg.obj = mStateLayout;
                 mHandler.sendMessageDelayed(msg, 3000);
             }
         });
-        mStateView.setEmptyView(R.layout.custom_empty_view);
-        ListView list = (ListView) mStateView.findViewById(R.id.list);
+        mStateLayout.setEmptyView(R.layout.custom_empty_view);
+        ListView list = (ListView) mStateLayout.findViewById(R.id.list);
 
         String[] data = new String[100];
         for (int i = 0; i < 100; i++) {
@@ -58,19 +58,19 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.error:
-                mStateView.showErrorView("Some problems");
+                mStateLayout.showError();
                 return true;
             case R.id.empty:
-                mStateView.showEmptyView("no result");
+                mStateLayout.showEmpty();
                 return true;
             case R.id.content:
-                mStateView.showContentView();
+                mStateLayout.showContent();
                 return true;
             case R.id.loading:
-                mStateView.showLoadingView("waiting");
+                mStateLayout.showLoading();
                 return true;
             case R.id.network:
-                mStateView.showNetworkView("The network is not available");
+                mStateLayout.showNetwork();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -80,8 +80,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void handleMessage(Message msg) {
-            if (msg.obj instanceof StateView) {
-                ((StateView) msg.obj).showContentView();
+            if (msg.obj instanceof StateLayout) {
+                ((StateLayout) msg.obj).showContent();
             }
             super.handleMessage(msg);
         }
