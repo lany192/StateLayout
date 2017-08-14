@@ -27,19 +27,19 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.error).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mStateLayout.showError();
+                mStateLayout.showError("发现一些问题");
             }
         });
         findViewById(R.id.empty).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mStateLayout.showEmpty();
+                mStateLayout.showEmpty("找不到内容");
             }
         });
         findViewById(R.id.network).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mStateLayout.showNetwork();
+                mStateLayout.showNetwork("没有网络啦");
             }
         });
         findViewById(R.id.loading).setOnClickListener(new View.OnClickListener() {
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                         mStateLayout.showContent();
                         Toast.makeText(getApplicationContext(), "load data finish", Toast.LENGTH_SHORT).show();
                     }
-                },3000);
+                }, 3000);
 
 
             }

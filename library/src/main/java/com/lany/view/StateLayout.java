@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -279,8 +280,38 @@ public class StateLayout extends FrameLayout {
         setViewState(State.ERROR);
     }
 
+    public void showError(String msg) {
+        setViewState(State.ERROR);
+        try {
+            TextView msgText = (TextView) mErrorView.findViewById(R.id.error_msg_text);
+            msgText.setText(msg);
+        } catch (Exception e) {
+            Log.e(TAG, "The error_msg_text is not found in the custom error view");
+        }
+    }
+
+    public void showEmpty(String msg) {
+        setViewState(State.EMPTY);
+        try {
+            TextView msgText = (TextView) mEmptyView.findViewById(R.id.empty_msg_text);
+            msgText.setText(msg);
+        } catch (Exception e) {
+            Log.e(TAG, "The empty_msg_text is not found in the custom empty view");
+        }
+    }
+
     public void showNetwork() {
         setViewState(State.NETWORK);
+    }
+
+    public void showNetwork(String msg) {
+        setViewState(State.NETWORK);
+        try {
+            TextView msgText = (TextView) mNetworkView.findViewById(R.id.network_msg_text_view);
+            msgText.setText(msg);
+        } catch (Exception e) {
+            Log.e(TAG, "The empty_msg_text is not found in the custom empty view");
+        }
     }
 
     public void showEmpty() {
