@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         });
         mStateLayout.setOnRetryListener(new StateLayout.OnRetryListener() {
             @Override
-            public void onRetry(@StateLayout.State int state) {
+            public void onRetry() {
                 mStateLayout.showLoading();
                 new Handler().postDelayed(new Runnable() {
                     @Override

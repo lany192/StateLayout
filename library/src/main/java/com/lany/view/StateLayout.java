@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -51,7 +52,7 @@ public class StateLayout extends FrameLayout {
     }
 
     public interface OnRetryListener {
-        void onRetry(@State int state);
+        void onRetry();
     }
 
     public void setOnRetryListener(OnRetryListener listener) {
@@ -99,7 +100,7 @@ public class StateLayout extends FrameLayout {
             @Override
             public void onClick(View v) {
                 if (mRetryListener != null) {
-                    mRetryListener.onRetry(State.EMPTY);
+                    mRetryListener.onRetry();
                 }
             }
         });
@@ -112,7 +113,7 @@ public class StateLayout extends FrameLayout {
             @Override
             public void onClick(View v) {
                 if (mRetryListener != null) {
-                    mRetryListener.onRetry(State.ERROR);
+                    mRetryListener.onRetry();
                 }
             }
         });
@@ -125,7 +126,7 @@ public class StateLayout extends FrameLayout {
             @Override
             public void onClick(View v) {
                 if (mRetryListener != null) {
-                    mRetryListener.onRetry(State.NETWORK);
+                    mRetryListener.onRetry();
                 }
             }
         });
@@ -187,7 +188,7 @@ public class StateLayout extends FrameLayout {
         }
     }
 
-    private void setViewState(@State int state) {
+    private void switchViewState(@State int state) {
         mState = state;
         if (mLoadingView != null) {
             mLoadingView.setVisibility(mState == State.LOADING ? VISIBLE : GONE);
@@ -219,8 +220,7 @@ public class StateLayout extends FrameLayout {
         }
     }
 
-
-    private void setViewForState(View view, @State int state, boolean switchToState) {
+    private void resetStateView(View view, @State int state, boolean switchToState) {
         switch (state) {
             case State.LOADING:
                 if (mLoadingView != null) removeView(mLoadingView);
@@ -249,81 +249,98 @@ public class StateLayout extends FrameLayout {
                 addView(mNetworkView);
                 break;
         }
-
-        setViewState(State.CONTENT);
+        switchViewState(State.CONTENT);
         if (switchToState)
-            setViewState(state);
+            switchViewState(state);
     }
 
-    private void setViewForState(View view, @State int state) {
-        setViewForState(view, state, false);
+    private void resetStateView(View view, @State int state) {
+        resetStateView(view, state, false);
     }
 
-    private void setViewForState(@LayoutRes int layoutRes, @State int state, boolean switchToState) {
+    private void resetStateView(@LayoutRes int layoutRes, @State int state, boolean switchToState) {
         View view = LayoutInflater.from(getContext()).inflate(layoutRes, this, false);
-        setViewForState(view, state, switchToState);
+        resetStateView(view, state, switchToState);
     }
 
-    private void setViewForState(@LayoutRes int layoutRes, @State int state) {
-        setViewForState(layoutRes, state, false);
+    private void resetStateView(@LayoutRes int layoutRes, @State int state) {
+        resetStateView(layoutRes, state, false);
     }
 
     public void showLoading() {
-        setViewState(State.LOADING);
+        switchViewState(State.LOADING);
+    }
+
+    public void showLoading(CharSequence message) {
+        switchViewState(State.LOADING);
+        if (TextUtils.isEmpty(message)) {
+            Log.i(TAG, "showLoading: The message is empty, using default");
+            return;
+        }
+        try {
+            TextView msgText = (TextView) mErrorView.findViewById(R.id.loading_msg_text);
+            msgText.setText(message);
+        } catch (Exception e) {
+            Log.e(TAG, "The loading_msg_text is not found in the custom loading view");
+        }
     }
 
     public void showContent() {
-        setViewState(State.CONTENT);
+        switchViewState(State.CONTENT);
     }
 
     public void showError() {
-        setViewState(State.ERROR);
+        switchViewState(State.ERROR);
     }
 
-    public void showError(String msg) {
-        setViewState(State.ERROR);
+    public void showError(CharSequence message) {
+        switchViewState(State.ERROR);
+        if (TextUtils.isEmpty(message)) {
+            Log.i(TAG, "showError: The message is empty, using default");
+            return;
+        }
         try {
             TextView msgText = (TextView) mErrorView.findViewById(R.id.error_msg_text);
-            msgText.setText(msg);
+            msgText.setText(message);
         } catch (Exception e) {
             Log.e(TAG, "The error_msg_text is not found in the custom error view");
         }
     }
 
-    public void showEmpty(String msg) {
-        setViewState(State.EMPTY);
-        try {
-            TextView msgText = (TextView) mEmptyView.findViewById(R.id.empty_msg_text);
-            msgText.setText(msg);
-        } catch (Exception e) {
-            Log.e(TAG, "The empty_msg_text is not found in the custom empty view");
-        }
-    }
-
     public void showNetwork() {
-        setViewState(State.NETWORK);
+        switchViewState(State.NETWORK);
     }
 
-    public void showNetwork(String msg) {
-        setViewState(State.NETWORK);
+    public void showNetwork(CharSequence message) {
+        switchViewState(State.NETWORK);
+        if (TextUtils.isEmpty(message)) {
+            Log.i(TAG, "showNetwork: The message is empty, using default");
+            return;
+        }
         try {
             TextView msgText = (TextView) mNetworkView.findViewById(R.id.network_msg_text_view);
-            msgText.setText(msg);
+            msgText.setText(message);
         } catch (Exception e) {
             Log.e(TAG, "The empty_msg_text is not found in the custom empty view");
         }
     }
 
     public void showEmpty() {
-        setViewState(State.EMPTY);
+        switchViewState(State.EMPTY);
     }
 
-    public void setEmptyView(@LayoutRes int layoutResId) {
-        setViewForState(layoutResId, State.EMPTY, true);
-    }
-
-    public void setErrorView(@LayoutRes int layoutResId) {
-        setViewForState(layoutResId, State.ERROR, true);
+    public void showEmpty(CharSequence message) {
+        switchViewState(State.EMPTY);
+        if (TextUtils.isEmpty(message)) {
+            Log.i(TAG, "showEmpty: The message is empty, using default");
+            return;
+        }
+        try {
+            TextView msgText = (TextView) mEmptyView.findViewById(R.id.empty_msg_text);
+            msgText.setText(message);
+        } catch (Exception e) {
+            Log.e(TAG, "The empty_msg_text is not found in the custom empty view");
+        }
     }
 
     @Nullable
