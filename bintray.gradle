@@ -10,7 +10,7 @@ publish {
     userOrg = 'lany192'
     groupId = 'com.lany'
     uploadName = 'StateView'
-    publishVersion = '1.0.9'
+    publishVersion = '1.1.0'
     autoPublish = true
     dryRun = false
     desc = 'This is an Android custom view more, contained load, error, empty and abnormal network the four views as a result, for the vast majority of app interface switching'
