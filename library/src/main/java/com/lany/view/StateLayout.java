@@ -74,17 +74,17 @@ public class StateLayout extends FrameLayout {
     }
 
     private void init(AttributeSet attrs) {
-        int loadingViewResId = R.layout.state_view_loading;
-        int emptyViewResId = R.layout.state_view_empty;
-        int errorViewResId = R.layout.state_view_error;
-        int networkViewResId = R.layout.state_view_network;
+        int loadingViewResId = R.layout.view_loading;
+        int emptyViewResId = R.layout.view_empty;
+        int errorViewResId = R.layout.view_error;
+        int networkViewResId = R.layout.view_network;
         mState = State.CONTENT;
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.StateLayout);
-            loadingViewResId = a.getResourceId(R.styleable.StateLayout_loadingView, R.layout.state_view_loading);
-            emptyViewResId = a.getResourceId(R.styleable.StateLayout_emptyView, R.layout.state_view_empty);
-            errorViewResId = a.getResourceId(R.styleable.StateLayout_errorView, R.layout.state_view_error);
-            networkViewResId = a.getResourceId(R.styleable.StateLayout_networkView, R.layout.state_view_network);
+            loadingViewResId = a.getResourceId(R.styleable.StateLayout_loadingView, R.layout.view_loading);
+            emptyViewResId = a.getResourceId(R.styleable.StateLayout_emptyView, R.layout.view_empty);
+            errorViewResId = a.getResourceId(R.styleable.StateLayout_errorView, R.layout.view_error);
+            networkViewResId = a.getResourceId(R.styleable.StateLayout_networkView, R.layout.view_network);
             mState = a.getInt(R.styleable.StateLayout_viewState, State.CONTENT);
             a.recycle();
         }
