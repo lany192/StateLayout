@@ -3,6 +3,6 @@
     <string name="touch_refresh">touch to retry</string>
     <string name="network_bad">Network anomalies,please check the network Settings.</string>
     <string name="loading">loading...</string>
-    <string name="empty">no found data</string>
-    <string name="sorry_hint">Sorry! some happened</string>
+    <string name="empty">No results found</string>
+    <string name="sorry_hint">Sorry! Some happened</string>
 </resources>
