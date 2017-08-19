@@ -67,7 +67,7 @@
             android:textSize="12sp" />
     </LinearLayout>
 
-    <com.lany.view.StateLayout
+    <com.lany.state.StateLayout
         android:id="@+id/stateLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -83,6 +83,6 @@
             android:layout_height="match_parent"
             tools:listitem="@android:layout/simple_list_item_1" />
 
-    </com.lany.view.StateLayout>
+    </com.lany.state.StateLayout>
 
 </LinearLayout>

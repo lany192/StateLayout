@@ -1,4 +1,4 @@
-package com.lany.multistateview;
+package com.lany.state.sample;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.lany.view.StateLayout;
+import com.lany.state.StateLayout;
 
 public class MainActivity extends AppCompatActivity {
     private StateLayout mStateLayout;
