@@ -3,7 +3,14 @@ This is an Android custom view more, contained load, error, empty and abnormal n
 
 这是一个Android自定义的多视图切换类，包含加载中、错误、结果空、网络异常和内容这5种视图，适合绝大多数app的界面切换
 ## Gradle
-    compile 'com.lany:StateView:1.1.3'
+    compile 'com.lany:StateView:1.1.4'
+    
+or
+
+    compile('com.lany:StateView:1.1.4', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    
 ## Layout
     <com.lany.state.StateLayout
         android:id="@+id/stateLayout"

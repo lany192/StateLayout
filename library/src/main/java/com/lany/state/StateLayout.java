@@ -220,7 +220,7 @@ public class StateLayout extends FrameLayout {
         }
     }
 
-    private void resetStateView(View view, @State int state, boolean switchToState) {
+    public void resetStateView(View view, @State int state, boolean switchToState) {
         switch (state) {
             case State.LOADING:
                 if (mLoadingView != null) removeView(mLoadingView);
@@ -254,7 +254,7 @@ public class StateLayout extends FrameLayout {
             switchViewState(state);
     }
 
-    private void resetStateView(View view, @State int state) {
+    public void resetStateView(View view, @State int state) {
         resetStateView(view, state, false);
     }
 
@@ -263,7 +263,7 @@ public class StateLayout extends FrameLayout {
         resetStateView(view, state, switchToState);
     }
 
-    private void resetStateView(@LayoutRes int layoutRes, @State int state) {
+    public void resetStateView(@LayoutRes int layoutRes, @State int state) {
         resetStateView(layoutRes, state, false);
     }
 
