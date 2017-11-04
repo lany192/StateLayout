@@ -10,7 +10,7 @@ publish {
     userOrg = 'lany192'
     groupId = 'com.lany'
     uploadName = 'StateView'
-    publishVersion = '1.1.4'
+    publishVersion = '1.2.0'
     autoPublish = true
     dryRun = false
     desc = 'This is an Android custom view more, contained load, error, empty and abnormal network the four views as a result, for the vast majority of app interface switching'
@@ -50,16 +50,4 @@ javadoc {
 artifacts {
     archives javadocJar
     archives sourcesJar
-}
-
-task makeClassesJar(type: Jar) {
-    destinationDir = file('build/outputs/jar/')
-    baseName = "StateView"
-    version = "1.1.4"
-    //要注意观察路径是否错误
-    from('build/intermediates/classes/debug')
-    exclude('**/BuildConfig.class')
-    exclude('**/BuildConfig\$*.class')
-    //exclude('**/R\$*.class')
-    include('**/*.class')
 }

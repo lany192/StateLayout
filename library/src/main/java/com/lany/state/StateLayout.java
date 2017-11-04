@@ -281,7 +281,7 @@ public class StateLayout extends FrameLayout {
             TextView msgText = (TextView) mErrorView.findViewById(R.id.loading_msg_text);
             msgText.setText(message);
         } catch (Exception e) {
-            Log.e(TAG, "The loading_msg_text is not found in the custom loading view");
+            Log.e(TAG, "The R.id.loading_msg_text is not found in the custom loading view");
         }
     }
 
@@ -303,7 +303,7 @@ public class StateLayout extends FrameLayout {
             TextView msgText = (TextView) mErrorView.findViewById(R.id.error_msg_text);
             msgText.setText(message);
         } catch (Exception e) {
-            Log.e(TAG, "The error_msg_text is not found in the custom error view");
+            Log.e(TAG, "The R.id.error_msg_text is not found in the custom error view");
         }
     }
 
@@ -321,7 +321,7 @@ public class StateLayout extends FrameLayout {
             TextView msgText = (TextView) mNetworkView.findViewById(R.id.network_msg_text_view);
             msgText.setText(message);
         } catch (Exception e) {
-            Log.e(TAG, "The empty_msg_text is not found in the custom empty view");
+            Log.e(TAG, "The R.id.network_msg_text_view is not found in the custom empty view");
         }
     }
 
@@ -339,7 +339,7 @@ public class StateLayout extends FrameLayout {
             TextView msgText = (TextView) mEmptyView.findViewById(R.id.empty_msg_text);
             msgText.setText(message);
         } catch (Exception e) {
-            Log.e(TAG, "The empty_msg_text is not found in the custom empty view");
+            Log.e(TAG, "The R.id.empty_msg_text is not found in the custom empty view");
         }
     }
 
