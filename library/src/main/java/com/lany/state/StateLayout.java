@@ -3,6 +3,7 @@ package com.lany.state;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.Keep;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -17,6 +18,10 @@ import android.widget.TextView;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+/**
+ * 多状态试图
+ */
+@Keep
 public class StateLayout extends FrameLayout {
     private final String TAG = "StateLayout";
     private View mContentView;
