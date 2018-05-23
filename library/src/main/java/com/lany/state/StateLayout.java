@@ -3,6 +3,7 @@ package com.lany.state;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.IdRes;
 import android.support.annotation.Keep;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
@@ -14,9 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
 /**
  * 多状态试图
@@ -30,30 +28,29 @@ public class StateLayout extends FrameLayout {
     private View mEmptyView;
     private View mNetworkView;
 
-    @StateLayout.State
-    private int mState = State.CONTENT;
-
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface State {
-        int CONTENT = 0;
-        int ERROR = 1;
-        int EMPTY = 2;
-        int LOADING = 3;
-        int NETWORK = 4;
-    }
-
+    @ViewType
+    private int mViewType = ViewType.CONTENT;
     @Nullable
     private OnStateListener mStateListener;
     @Nullable
     private OnRetryListener mRetryListener;
 
+    private LayoutInflater mLayoutInflater;
+    @LayoutRes
+    private int loadingLayoutId = R.layout.view_loading;
+    @LayoutRes
+    private int emptyLayoutId = R.layout.view_empty;
+    @LayoutRes
+    private int errorLayoutId = R.layout.view_error;
+    @LayoutRes
+    private int networkLayoutId = R.layout.view_network;
 
     public void setOnStateListener(OnStateListener listener) {
         mStateListener = listener;
     }
 
     public interface OnStateListener {
-        void onStateChanged(@State int state);
+        void onStateChanged(@ViewType int state);
     }
 
     public interface OnRetryListener {
@@ -79,27 +76,30 @@ public class StateLayout extends FrameLayout {
     }
 
     private void init(AttributeSet attrs) {
-        int loadingViewResId = R.layout.view_loading;
-        int emptyViewResId = R.layout.view_empty;
-        int errorViewResId = R.layout.view_error;
-        int networkViewResId = R.layout.view_network;
-        mState = State.CONTENT;
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.StateLayout);
-            loadingViewResId = a.getResourceId(R.styleable.StateLayout_loadingView, R.layout.view_loading);
-            emptyViewResId = a.getResourceId(R.styleable.StateLayout_emptyView, R.layout.view_empty);
-            errorViewResId = a.getResourceId(R.styleable.StateLayout_errorView, R.layout.view_error);
-            networkViewResId = a.getResourceId(R.styleable.StateLayout_networkView, R.layout.view_network);
-            mState = a.getInt(R.styleable.StateLayout_viewState, State.CONTENT);
+            loadingLayoutId = a.getResourceId(R.styleable.StateLayout_loadingView, R.layout.view_loading);
+            emptyLayoutId = a.getResourceId(R.styleable.StateLayout_emptyView, R.layout.view_empty);
+            errorLayoutId = a.getResourceId(R.styleable.StateLayout_errorView, R.layout.view_error);
+            networkLayoutId = a.getResourceId(R.styleable.StateLayout_networkView, R.layout.view_network);
+            mViewType = a.getInt(R.styleable.StateLayout_viewState, ViewType.CONTENT);
             a.recycle();
         }
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        mLoadingView = inflater.inflate(loadingViewResId, this, false);
+        mLayoutInflater = LayoutInflater.from(getContext());
+        addLoadingView();
+        addEmptyView();
+        addErrorView();
+        addNetworkView();
+    }
+
+    private void addLoadingView() {
+        mLoadingView = mLayoutInflater.inflate(loadingLayoutId, this, false);
         mLoadingView.setVisibility(GONE);
         addView(mLoadingView, mLoadingView.getLayoutParams());
+    }
 
-
-        mEmptyView = inflater.inflate(emptyViewResId, this, false);
+    private void addEmptyView() {
+        mEmptyView = mLayoutInflater.inflate(emptyLayoutId, this, false);
         mEmptyView.setVisibility(GONE);
         mEmptyView.setOnClickListener(new OnClickListener() {
             @Override
@@ -110,9 +110,10 @@ public class StateLayout extends FrameLayout {
             }
         });
         addView(mEmptyView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+    }
 
-
-        mErrorView = inflater.inflate(errorViewResId, this, false);
+    private void addErrorView() {
+        mErrorView = mLayoutInflater.inflate(errorLayoutId, this, false);
         mErrorView.setVisibility(GONE);
         mErrorView.setOnClickListener(new OnClickListener() {
             @Override
@@ -123,9 +124,10 @@ public class StateLayout extends FrameLayout {
             }
         });
         addView(mErrorView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+    }
 
-
-        mNetworkView = inflater.inflate(networkViewResId, this, false);
+    private void addNetworkView() {
+        mNetworkView = mLayoutInflater.inflate(networkLayoutId, this, false);
         mNetworkView.setVisibility(GONE);
         mNetworkView.setOnClickListener(new OnClickListener() {
             @Override
@@ -141,8 +143,9 @@ public class StateLayout extends FrameLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (mContentView == null)
+        if (mContentView == null) {
             throw new IllegalArgumentException("Content view is not defined");
+        }
     }
 
     @Override
@@ -193,173 +196,258 @@ public class StateLayout extends FrameLayout {
         }
     }
 
-    private void switchViewState(@State int state) {
-        mState = state;
+    private void switchViewState(@ViewType int type) {
+        mViewType = type;
         if (mLoadingView != null) {
-            mLoadingView.setVisibility(mState == State.LOADING ? VISIBLE : GONE);
+            mLoadingView.setVisibility(mViewType == ViewType.LOADING ? VISIBLE : GONE);
         } else {
             throw new NullPointerException("Loading View");
         }
         if (mErrorView != null) {
-            mErrorView.setVisibility(mState == State.ERROR ? VISIBLE : GONE);
+            mErrorView.setVisibility(mViewType == ViewType.ERROR ? VISIBLE : GONE);
         } else {
             throw new NullPointerException("ErrorView View");
         }
         if (mEmptyView != null) {
-            mEmptyView.setVisibility(mState == State.EMPTY ? VISIBLE : GONE);
+            mEmptyView.setVisibility(mViewType == ViewType.EMPTY ? VISIBLE : GONE);
         } else {
             throw new NullPointerException("EmptyView View");
         }
         if (mNetworkView != null) {
-            mNetworkView.setVisibility(mState == State.NETWORK ? VISIBLE : GONE);
+            mNetworkView.setVisibility(mViewType == ViewType.NETWORK ? VISIBLE : GONE);
         } else {
             throw new NullPointerException("NetworkView View");
         }
         if (mContentView != null) {
-            mContentView.setVisibility(mState == State.CONTENT ? VISIBLE : GONE);
+            mContentView.setVisibility(mViewType == ViewType.CONTENT ? VISIBLE : GONE);
         } else {
             throw new NullPointerException("ContentView View");
         }
         if (mStateListener != null) {
-            mStateListener.onStateChanged(mState);
+            mStateListener.onStateChanged(mViewType);
         }
     }
 
-    public void resetStateView(View view, @State int state, boolean switchToState) {
+    public void resetStateView(View view, @ViewType int state, boolean switchToState) {
         switch (state) {
-            case State.LOADING:
-                if (mLoadingView != null) removeView(mLoadingView);
+            case ViewType.LOADING:
+                if (mLoadingView != null) {
+                    removeView(mLoadingView);
+                }
                 mLoadingView = view;
                 addView(mLoadingView);
                 break;
-            case State.EMPTY:
-                if (mEmptyView != null) removeView(mEmptyView);
+            case ViewType.EMPTY:
+                if (mEmptyView != null) {
+                    removeView(mEmptyView);
+                }
                 mEmptyView = view;
                 addView(mEmptyView);
                 break;
-            case State.ERROR:
-                if (mErrorView != null) removeView(mErrorView);
+            case ViewType.ERROR:
+                if (mErrorView != null) {
+                    removeView(mErrorView);
+                }
                 mErrorView = view;
                 addView(mErrorView);
                 break;
-            case State.CONTENT:
-                if (mContentView != null) removeView(mContentView);
+            case ViewType.CONTENT:
+                if (mContentView != null) {
+                    removeView(mContentView);
+                }
                 mContentView = view;
                 addView(mContentView);
                 break;
-            case State.NETWORK:
-                if (mNetworkView != null)
+            case ViewType.NETWORK:
+                if (mNetworkView != null) {
                     removeView(mNetworkView);
+                }
                 mNetworkView = view;
                 addView(mNetworkView);
                 break;
         }
-        switchViewState(State.CONTENT);
-        if (switchToState)
+        switchViewState(ViewType.CONTENT);
+        if (switchToState) {
             switchViewState(state);
+        }
     }
 
-    public void resetStateView(View view, @State int state) {
-        resetStateView(view, state, false);
+    public void resetStateView(View view, @ViewType int type) {
+        resetStateView(view, type, false);
     }
 
-    private void resetStateView(@LayoutRes int layoutRes, @State int state, boolean switchToState) {
+    private void resetStateView(@LayoutRes int layoutRes, @ViewType int state, boolean switchToState) {
         View view = LayoutInflater.from(getContext()).inflate(layoutRes, this, false);
         resetStateView(view, state, switchToState);
     }
 
-    public void resetStateView(@LayoutRes int layoutRes, @State int state) {
+    public void resetStateView(@LayoutRes int layoutRes, @ViewType int state) {
         resetStateView(layoutRes, state, false);
     }
 
+    /**
+     * 使用默认的加载视图
+     */
     public void showLoading() {
-        switchViewState(State.LOADING);
+        switchViewState(ViewType.LOADING);
     }
 
+    /**
+     * 自定义加载视图显示内容
+     *
+     * @param message 要显示的内容
+     */
     public void showLoading(CharSequence message) {
-        switchViewState(State.LOADING);
+        switchViewState(ViewType.LOADING);
         if (TextUtils.isEmpty(message)) {
             Log.i(TAG, "showLoading: The message is empty, using default");
             return;
         }
         try {
-            TextView msgText = (TextView) mErrorView.findViewById(R.id.loading_msg_text);
-            msgText.setText(message);
+            ((TextView) mLoadingView.findViewById(R.id.loading_msg_text)).setText(message);
         } catch (Exception e) {
             Log.e(TAG, "The R.id.loading_msg_text is not found in the custom loading view");
         }
     }
 
+    /**
+     * 使用自定义的加载视图id显示内容
+     *
+     * @param message           要显示的内容
+     * @param messageTextViewId 显示TextView控件的id
+     */
+    public void showLoading(CharSequence message, @IdRes int messageTextViewId) {
+        switchViewState(ViewType.LOADING);
+        try {
+            ((TextView) mLoadingView.findViewById(messageTextViewId)).setText(message);
+        } catch (Exception e) {
+            Log.e(TAG, "The " + messageTextViewId + " id is not found in the custom loading view");
+        }
+    }
+
+    /**
+     * 显示内容视图
+     */
     public void showContent() {
-        switchViewState(State.CONTENT);
+        switchViewState(ViewType.CONTENT);
     }
 
+    /**
+     * 使用默认错误视图显示
+     */
     public void showError() {
-        switchViewState(State.ERROR);
+        switchViewState(ViewType.ERROR);
     }
 
+    /**
+     * 使用默认错误视图显示自定义的内容
+     *
+     * @param message 显示内容
+     */
     public void showError(CharSequence message) {
-        switchViewState(State.ERROR);
+        switchViewState(ViewType.ERROR);
         if (TextUtils.isEmpty(message)) {
             Log.i(TAG, "showError: The message is empty, using default");
             return;
         }
         try {
-            TextView msgText = (TextView) mErrorView.findViewById(R.id.error_msg_text);
-            msgText.setText(message);
+            ((TextView) mErrorView.findViewById(R.id.error_msg_text)).setText(message);
         } catch (Exception e) {
             Log.e(TAG, "The R.id.error_msg_text is not found in the custom error view");
         }
     }
 
+    /**
+     * 使用自定义的错误视图id显示内容
+     *
+     * @param message           要显示的内容
+     * @param messageTextViewId 显示TextView控件的id
+     */
+    public void showError(CharSequence message, @IdRes int messageTextViewId) {
+        switchViewState(ViewType.ERROR);
+        try {
+            ((TextView) mErrorView.findViewById(messageTextViewId)).setText(message);
+        } catch (Exception e) {
+            Log.e(TAG, "The " + messageTextViewId + " id is not found in the custom error view");
+        }
+    }
+
     public void showNetwork() {
-        switchViewState(State.NETWORK);
+        switchViewState(ViewType.NETWORK);
     }
 
     public void showNetwork(CharSequence message) {
-        switchViewState(State.NETWORK);
+        switchViewState(ViewType.NETWORK);
         if (TextUtils.isEmpty(message)) {
             Log.i(TAG, "showNetwork: The message is empty, using default");
             return;
         }
         try {
-            TextView msgText = (TextView) mNetworkView.findViewById(R.id.network_msg_text_view);
-            msgText.setText(message);
+            ((TextView) mNetworkView.findViewById(R.id.network_msg_text_view)).setText(message);
         } catch (Exception e) {
             Log.e(TAG, "The R.id.network_msg_text_view is not found in the custom empty view");
         }
     }
 
+    /**
+     * 使用自定义的网络视图id显示内容
+     *
+     * @param message           要显示的内容
+     * @param messageTextViewId 显示TextView控件的id
+     */
+    public void showNetwork(CharSequence message, @IdRes int messageTextViewId) {
+        switchViewState(ViewType.NETWORK);
+        try {
+            ((TextView) mNetworkView.findViewById(messageTextViewId)).setText(message);
+        } catch (Exception e) {
+            Log.e(TAG, "The " + messageTextViewId + " id is not found in the custom network view");
+        }
+    }
+
     public void showEmpty() {
-        switchViewState(State.EMPTY);
+        switchViewState(ViewType.EMPTY);
     }
 
     public void showEmpty(CharSequence message) {
-        switchViewState(State.EMPTY);
+        switchViewState(ViewType.EMPTY);
         if (TextUtils.isEmpty(message)) {
             Log.i(TAG, "showEmpty: The message is empty, using default");
             return;
         }
         try {
-            TextView msgText = (TextView) mEmptyView.findViewById(R.id.empty_msg_text);
-            msgText.setText(message);
+            ((TextView) mEmptyView.findViewById(R.id.empty_msg_text)).setText(message);
         } catch (Exception e) {
             Log.e(TAG, "The R.id.empty_msg_text is not found in the custom empty view");
         }
     }
 
+    /**
+     * 使用自定义的空视图id显示内容
+     *
+     * @param message           要显示的内容
+     * @param messageTextViewId 显示TextView控件的id
+     */
+    public void showEmpty(CharSequence message, @IdRes int messageTextViewId) {
+        switchViewState(ViewType.EMPTY);
+        try {
+            ((TextView) mEmptyView.findViewById(messageTextViewId)).setText(message);
+        } catch (Exception e) {
+            Log.e(TAG, "The " + messageTextViewId + " id is not found in the custom empty view");
+        }
+    }
+
     @Nullable
-    public View getView(@State int state) {
+    public View getView(@ViewType int state) {
         switch (state) {
-            case State.LOADING:
+            case ViewType.LOADING:
                 return mLoadingView;
-            case State.CONTENT:
+            case ViewType.CONTENT:
                 return mContentView;
-            case State.EMPTY:
+            case ViewType.EMPTY:
                 return mEmptyView;
-            case State.ERROR:
+            case ViewType.ERROR:
                 return mErrorView;
-            case State.NETWORK:
+            case ViewType.NETWORK:
                 return mNetworkView;
             default:
                 Log.e(TAG, "error!!!");

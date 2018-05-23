@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.lany.state.StateLayout;
+import com.lany.state.ViewType;
 
 public class MainActivity extends AppCompatActivity {
     private StateLayout mStateLayout;
@@ -50,10 +51,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        mStateLayout = (StateLayout) findViewById(R.id.stateLayout);
+        mStateLayout = findViewById(R.id.stateLayout);
         mStateLayout.setOnStateListener(new StateLayout.OnStateListener() {
             @Override
-            public void onStateChanged(@StateLayout.State int state) {
+            public void onStateChanged(@ViewType int state) {
                 Log.i("MainActivity", "onStateChanged: state==" + state);
             }
         });
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ListView list = (ListView) findViewById(R.id.list);
+        ListView list = findViewById(R.id.list);
 
         String[] data = new String[100];
         for (int i = 0; i < 100; i++) {
