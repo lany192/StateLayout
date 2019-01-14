@@ -2,7 +2,6 @@ package com.lany.state.sample;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -11,6 +10,8 @@ import android.widget.Toast;
 
 import com.lany.state.StateLayout;
 import com.lany.state.ViewType;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
     private StateLayout mStateLayout;

@@ -3,10 +3,6 @@ package com.lany.state;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.IdRes;
-import android.support.annotation.Keep;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -15,6 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.Keep;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
 
 /**
  * 多状态试图
