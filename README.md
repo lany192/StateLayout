@@ -16,11 +16,11 @@ This is an Android custom view more, contained load, error, empty and abnormal n
     }
         
     dependencies {
-        implementation 'com.github.lany192:StateView:1.2.3'
+         implementation 'com.github.lany192:StateLayout:1.2.4'
     }
     
 ## Layout
-    <com.lany.state.StateLayout
+    <com.github.lany192.view.StateLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/stateLayout"
         android:layout_width="match_parent"
@@ -37,11 +37,11 @@ This is an Android custom view more, contained load, error, empty and abnormal n
             android:layout_height="match_parent"
             tools:listitem="@android:layout/simple_list_item_1" />
 
-    </com.lany.state.StateLayout>
+    </com.github.lany192.view.StateLayout>
 
 ##### 或者使用默认配置
 
-    <com.lany.state.StateLayout
+    <com.github.lany192.view.StateLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/stateLayout"
         android:layout_width="match_parent"
@@ -53,7 +53,7 @@ This is an Android custom view more, contained load, error, empty and abnormal n
             android:layout_height="match_parent"
             tools:listitem="@android:layout/simple_list_item_1" />
 
-    </com.lany.state.StateLayout>
+    </com.github.lany192.view.StateLayout>
     
 ## Preview
 ![image](https://github.com/lany192/MultiStateView/raw/master/preview/video.gif)
