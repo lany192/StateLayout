@@ -1,4 +1,4 @@
-package com.lany.state;
+package com.github.lany192.view;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -1,4 +1,4 @@
-package com.lany.state;
+package com.github.lany192.view;
 
 
 import android.content.Context;
@@ -16,6 +16,8 @@ import androidx.annotation.IdRes;
 import androidx.annotation.Keep;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.Nullable;
+
+import com.lany.state.R;
 
 /**
  * 多状态试图

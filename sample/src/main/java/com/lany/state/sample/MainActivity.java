@@ -3,15 +3,14 @@ package com.lany.state.sample;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.lany.state.StateLayout;
-import com.lany.state.ViewType;
-
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.github.lany192.view.StateLayout;
+
 
 public class MainActivity extends AppCompatActivity {
     private StateLayout mStateLayout;
@@ -20,59 +19,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        findViewById(R.id.content).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mStateLayout.showContent();
-            }
-        });
-        findViewById(R.id.error).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mStateLayout.showError("发现一些问题");
-            }
-        });
-        findViewById(R.id.empty).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mStateLayout.showEmpty("找不到内容");
-            }
-        });
-        findViewById(R.id.network).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mStateLayout.showNetwork("没有网络啦");
-            }
-        });
-        findViewById(R.id.loading).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mStateLayout.showLoading();
-            }
-        });
+        findViewById(R.id.content).setOnClickListener(view -> mStateLayout.showContent());
+        findViewById(R.id.error).setOnClickListener(view -> mStateLayout.showError("发现一些问题"));
+        findViewById(R.id.empty).setOnClickListener(view -> mStateLayout.showEmpty("找不到内容"));
+        findViewById(R.id.network).setOnClickListener(view -> mStateLayout.showNetwork("没有网络啦"));
+        findViewById(R.id.loading).setOnClickListener(view -> mStateLayout.showLoading());
 
 
         mStateLayout = findViewById(R.id.stateLayout);
-        mStateLayout.setOnStateListener(new StateLayout.OnStateListener() {
-            @Override
-            public void onStateChanged(@ViewType int state) {
-                Log.i("MainActivity", "onStateChanged: state==" + state);
-            }
-        });
-        mStateLayout.setOnRetryListener(new StateLayout.OnRetryListener() {
-            @Override
-            public void onRetry() {
-                mStateLayout.showLoading();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mStateLayout.showContent();
-                        Toast.makeText(getApplicationContext(), "load data finish", Toast.LENGTH_SHORT).show();
-                    }
-                }, 3000);
+        mStateLayout.setOnStateListener(state -> Log.i("MainActivity", "onStateChanged: state==" + state));
+        mStateLayout.setOnRetryListener(() -> {
+            mStateLayout.showLoading();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mStateLayout.showContent();
+                    Toast.makeText(getApplicationContext(), "load data finish", Toast.LENGTH_SHORT).show();
+                }
+            }, 3000);
 
 
-            }
         });
 
         ListView list = findViewById(R.id.list);
