@@ -30,12 +30,9 @@ public class MainActivity extends AppCompatActivity {
         mStateLayout.setOnStateListener(state -> Log.i("MainActivity", "onStateChanged: state==" + state));
         mStateLayout.setOnRetryListener(() -> {
             mStateLayout.showLoading();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mStateLayout.showContent();
-                    Toast.makeText(getApplicationContext(), "load data finish", Toast.LENGTH_SHORT).show();
-                }
+            new Handler().postDelayed(() -> {
+                mStateLayout.showContent();
+                Toast.makeText(getApplicationContext(), "load data finish", Toast.LENGTH_SHORT).show();
             }, 3000);
 
 
@@ -47,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < 100; i++) {
             data[i] = "Item " + i;
         }
-        list.setAdapter(new ArrayAdapter<>(getApplicationContext(), R.layout.list_item, data));
+        list.setAdapter(new ArrayAdapter<>(this, R.layout.list_item, data));
     }
 }
 
